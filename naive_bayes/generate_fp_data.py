@@ -1,6 +1,5 @@
-from itertools import islice
 from multiprocessing import Pool, cpu_count
-from typing import Any, Iterator, Iterable, List, Tuple
+from typing import Any, Iterator, List
 import os
 import csv
 
@@ -9,17 +8,23 @@ from .utils import batch_iterable, read_csv, get_fp_chunk_list
 
 
 class FingerprintGenerator:
-    def __init__(self, data_dir):
+    def __init__(self, data_dir: str) -> None:
         self.data_dir = data_dir
         self.cpu_count = cpu_count()
 
-    def _get_batched_smiles(self, csv_file):
+    def _get_batched_smiles(self, csv_file: str) -> Iterator[List[Any]]:
+        """
+        Read csv file and return batched smiles
+        """
         chunk_size = 1024
         data_file = os.path.join(self.data_dir, csv_file)
         smiles_data = read_csv(data_file)
         return batch_iterable(smiles_data, chunk_size)
 
-    def generate_fingerprint_set(self, csv_file, output_file):
+    def generate_fingerprint_set(self, csv_file: str, output_file: str) -> None:
+        """
+        Generate fingerprint set from csv file
+        """
 
         output_file = os.path.join(self.data_dir, output_file)
         batched_smiles = self._get_batched_smiles(csv_file)
@@ -30,7 +35,10 @@ class FingerprintGenerator:
                     for result in results:
                         writer.writerow(result)
 
-    def generate_fingerprint_set_new(self, csv_file, output_file):
+    def generate_fingerprint_set_new(self, csv_file: str, output_file: str) -> None:
+        """
+        Generate fingerprint set from csv file
+        """
 
         output_file = os.path.join(self.data_dir, output_file)
         batched_smiles = self._get_batched_smiles(csv_file)

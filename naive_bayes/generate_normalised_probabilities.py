@@ -6,7 +6,10 @@ from collections import defaultdict, Counter
 from .utils import read_csv
 
 
-def write_laplacian_df(num_of_feature_in_a_class, total_num_mols, output_file):
+def write_laplacian_df(num_of_feature_in_a_class: dict, total_num_mols: int, output_file: str) -> None:
+    """
+    Create a dataframe with laplacian values and wrtie a csv files
+    """
 
     p_baseline_dict_for_all_classes = {k:v / total_num_mols for k, v in num_of_feature_in_a_class.items()}
 
@@ -18,7 +21,10 @@ def write_laplacian_df(num_of_feature_in_a_class, total_num_mols, output_file):
     laplacian_df.to_csv(output_file, index=False)
 
 
-def create_total_feature_counts_dict(target_fingerprint_csv_file):
+def create_total_feature_counts_dict(target_fingerprint_csv_file: str) -> dict:
+    """
+    Create a dictionary with total feature counts
+    """
     rows = read_csv(target_fingerprint_csv_file)
     feature_list = []
     for row in rows:
@@ -27,13 +33,19 @@ def create_total_feature_counts_dict(target_fingerprint_csv_file):
     return total_feature_counts_dict
 
 
-def write_map_fingerprint(total_feature_counts_dict, output_file):
+def write_map_fingerprint(total_feature_counts_dict: dict, output_file: str) -> None:
+    """
+    Create a dataframe with total feature counts and write a csv file
+    """
 
     total_feature_count_df = pd.DataFrame(total_feature_counts_dict.items(), columns=["feature", "frequency_all"])
     total_feature_count_df.to_csv(output_file, index=False, chunksize=100000)
 
 
-def create_result_dict(target_fingerprint_csv_file):
+def create_result_dict(target_fingerprint_csv_file: str) -> dict:
+    """
+    Create a dictionary with target and fingerprint counts
+    """
     result_dict = defaultdict(lambda: defaultdict(int))
     rows = read_csv(target_fingerprint_csv_file)
     for row in rows:
@@ -41,15 +53,17 @@ def create_result_dict(target_fingerprint_csv_file):
     return result_dict
 
 
-def write_target_norm_p(result_dict, num_of_feature_in_a_class, len_concat_list, total_feature_counts_dict,
-                        output_file):
+def write_target_norm_p(result_dict: dict, num_of_feature_in_a_class: dict, len_concat_list: int,
+                        total_feature_counts_dict: dict, output_file: str) -> None:
+    """
+    Create a dataframe with normalised probabilities and write a csv file
+    """
     list_of_tuple = []
     logp_final_new = defaultdict(dict)
 
     for k, v in result_dict.items():
 
         for x, y in v.items():
-
 
             if num_of_feature_in_a_class.get(k):
                 p_base = (num_of_feature_in_a_class.get(k)) / len_concat_list
@@ -67,6 +81,9 @@ def write_target_norm_p(result_dict, num_of_feature_in_a_class, len_concat_list,
 
 
 def run(data_dir: str = "data") -> None:
+    """
+    Run the entire process
+    """
     col_names = ["monomer_id", "smiles", "target", "sets"]
     df = pd.read_csv(
         (os.path.join(data_dir, "train_fp.csv")),

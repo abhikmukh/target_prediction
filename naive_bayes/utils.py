@@ -1,9 +1,6 @@
 from itertools import islice
-from multiprocessing import Pool, cpu_count
-from pathlib import Path
 from typing import Any, Iterator, Iterable, List, Tuple
 from functools import lru_cache
-import os
 import csv
 
 from rdkit import Chem
@@ -11,17 +8,18 @@ from rdkit.Chem import AllChem
 
 
 def batch_iterable(iterable: Iterable[Any], batch_size: int) -> Iterator[List[Any]]:
+    """
+    Create a batch iterable
+    """
     iterator = iter(iterable)
     while batch := list(islice(iterator, batch_size)):
         yield batch
 
 
-def read_csv(filename):
-    '''
-    ead csv file
-    :param filename:
-    :return:
-    '''
+def read_csv(filename: str) -> Iterator[List[str]]:
+    """
+    Read csv file and returns an iterator
+    """
     with open(filename, 'r') as csv_file:
         next(csv_file)
         csv_reader = csv.reader(csv_file)
