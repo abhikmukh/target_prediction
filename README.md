@@ -7,6 +7,8 @@ In this work, I have used a subset of target-ligand dataset from BindingDB. This
 ## Requirements
 To run this repository create a conda environemnt with this command conda env create --name envname --file=environments.yml
 
+## 
+This dataset is obtained from BindingDB and processed afterwards to create a data set of ligand and target that is suitable for this work using the data_processing_notebook present inside the naive_bayes folder. If you want to use a different data set, create a csv file in this format (ID, SMILES, CLASS).
 
 ## How to run this project
 Once the conda enviroment is created run the process.py inside the conda environment. It will create the model and load the model in a local PostgreSQL database. Next run the app.py to start the web server. Once the web server is started please follwo the instructions in the web page. 
