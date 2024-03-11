@@ -12,3 +12,6 @@ Once the conda enviroment is created run the process.py inside the conda environ
 
 
 ![web screenshot](/screenshots/webpage_screeshot.PNG?raw=true)
+
+## Database schema
+![database schema](/screenshots/schema.PNG?raw=true)
