@@ -1,26 +1,23 @@
-import psycopg2
-import psycopg2.extras
 import math
 import os
 import pandas as pd
-from rdkit import Chem
-from rdkit.Chem import AllChem
-import multiprocessing
-import csv
-import time
 
-from naive_bayes.utils import  read_csv, get_fp_rdkit
+from naive_bayes.utils import get_fp_rdkit
 from naive_bayes.database_utils import DatabaseConnector
 
 base_path = os.getcwd()
 database_connector = DatabaseConnector(base_path=base_path, cred_file="db_credential.yaml")
 
 
-def _calculate_correction_np(target_id, fingerprint_list, freq_all_list, fingerprint_freq_all_list):
+def _calculate_correction_np(target_id: str, fingerprint_list: list, freq_all_list: list,
+                             fingerprint_freq_all_list: list) -> float:
+    """
+    Calculate Laplacian correction for normalised probability
+    """
 
     query_to_get_fps = f"select fp.feature as present from normalised_probabilities np, fingerprints fp, targets pt " \
-            f"where np.target_id = pt.target_id and pt.sc_target_id = '{target_id}' " \
-            f"and np.fingerprint_id = fp.fingerprint_id and fp.feature in {tuple(fingerprint_list)}"
+                       f"where np.target_id = pt.target_id and pt.sc_target_id = '{target_id}' " \
+                       f"and np.fingerprint_id = fp.fingerprint_id and fp.feature in {tuple(fingerprint_list)}"
 
     present_fp = database_connector.run_query(query_to_get_fps)
     present_fp_list = []
@@ -43,7 +40,10 @@ def _calculate_correction_np(target_id, fingerprint_list, freq_all_list, fingerp
     return sum(np_corr_list)
 
 
-def predict_target(input_smiles):
+def predict_target(input_smiles: str) -> str:
+    """
+    Predict target based on input SMILES
+    """
 
     if get_fp_rdkit(input_smiles) is not None:
 
