@@ -11,4 +11,4 @@ To run this repository create a conda environemnt with flask, SQLalchemy, Rdkit 
 Once the conda enviroment is created run the process.py inside the conda environment. It will create the model and load the model in a local PostgreSQL database. Next run the app.py to start the web server. Once the web server is started please follwo the instructions in the web page. 
 
 
-![web screenshot](/main/screenshots/webpage_screeshot.PNG?raw=true)
+![web screenshot](/screenshots/webpage_screeshot.PNG?raw=true)
